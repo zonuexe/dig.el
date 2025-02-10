@@ -47,8 +47,8 @@
    :eval (dig '(:foo 42) :foo)
    :eval (dig-plist '(:foo 42) :foo))
   (dig-nth
-   :eval (dig '(39 (40 41 42)) 1 2))
-   :eval (dig-nth '(39 (40 41 42)) 1 2)
+   :eval (dig '(39 (40 41 42)) 1 2)
+   :eval (dig-nth '(39 (40 41 42)) 1 2))
   (dig-hash
    :eval (macroexpand
           '(dig-hash subject "foo" "bar"))
