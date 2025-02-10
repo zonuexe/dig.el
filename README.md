@@ -9,6 +9,40 @@
 
 Instead of manually traversing these structures, `dig.el` expands lookup expressions at macro expansion time, ensuring efficient and readable deep access.
 
+## Usage
+
+### Retrieving values from different data structures
+
+```el
+(setq my-alist '((foo . ((bar . 42)))))
+(setq my-plist '(:foo (:bar 42)))
+(setq my-hash (make-hash-table :test 'equal))
+(puthash "foo" (make-hash-table :test 'equal) my-hash)
+(puthash "bar" 42 (gethash "foo" my-hash))
+(setq my-list '((42 43) (44 45)))
+
+(dig-alist my-alist 'foo 'bar)   ;; => 42
+(dig-plist my-plist :foo :bar)   ;; => 42
+(dig-hash my-hash "foo" "bar") ;; => 42
+(dig-nth my-list 1 0)           ;; => 44
+```
+
+### Using dig for automatic key expansion
+
+The dig macro determines the appropriate lookup method based on the key type. The first key (first-key) is required, and additional keys (keys) allow deeper traversal.
+
+```el
+(dig my-alist 'foo 'bar)   ;; Expands to alist lookup
+(dig my-plist :foo :bar)   ;; Expands to plist lookup
+(dig my-hash "foo" "bar") ;; Expands to hash lookup
+(dig my-list 1 0)          ;; Expands to nth lookup
+```
+
+This approach makes retrieving deeply nested values more expressive and concise.
+
+> [!NOTE]
+> Please note that these retrieval methods are not dynamically determined by the target data structure, but rather the macros are statically expanded depending on the key to be retrieved.
+
 ## Why “dig”?
 
 The name "dig" reflects the idea of digging into structured data to retrieve nested values.
