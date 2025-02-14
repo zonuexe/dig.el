@@ -27,6 +27,8 @@
 
 ;;; Code:
 (require 'cl-lib)
+(eval-when-compile
+  (require 'gv))
 
 ;; Internal functions
 (defun dig--expand-alist (subject key)
@@ -117,6 +119,27 @@ KEYS is an optional sequence of additional keys or indices, each of which
 determines how to expand its lookup expression at macro expansion time.
 Returns the value associated with the final key or index."
   (cl-reduce #'dig--expand-dwim (cons first-key keys) :initial-value subject))
+
+;; Setter for generalized variables
+(gv-define-setter dig-alist (store seq &rest keys)
+  (let ((getter (cl-reduce #'dig--expand-alist keys :initial-value seq)))
+    (macroexpand-all `(setf ,getter ,store))))
+
+(gv-define-setter dig-plist (store seq &rest keys)
+  (let ((getter (cl-reduce #'dig--expand-plist keys :initial-value seq)))
+    (macroexpand-all `(setf ,getter ,store))))
+
+(gv-define-setter dig-hash (store seq &rest keys)
+  (let ((getter (cl-reduce #'dig--expand-hash keys :initial-value seq)))
+    (macroexpand-all `(setf ,getter ,store))))
+
+(gv-define-setter dig-nth (store seq &rest keys)
+  (let* ((getter (cl-reduce #'dig--expand-nth keys :initial-value seq)))
+    (macroexpand-all `(setf ,getter ,store))))
+
+(gv-define-setter dig (store seq &rest keys)
+  (let* ((getter (cl-reduce #'dig--expand-dwim keys :initial-value seq)))
+    (macroexpand-all `(setf ,getter ,store))))
 
 (provide 'dig)
 ;;; dig.el ends here

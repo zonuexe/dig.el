@@ -1,6 +1,6 @@
 # 🪖 dig.el
 
-`dig.el` is an Emacs Lisp package that provides helper macros for retrieving values from structured lists and hash tables. This package allows users to conveniently "dig" into nested data structures such as:
+`dig.el` is an Emacs Lisp package that provides helper macros for retrieving values from structured lists and hash tables. This package allows users to conveniently “dig” into nested data structures such as:
 
  * Association lists (alist)
  * Property lists (plist)
@@ -45,7 +45,7 @@ This approach makes retrieving deeply nested values more expressive and concise.
 
 ## Why “dig”?
 
-The name "dig" reflects the idea of digging into structured data to retrieve nested values.
+The name “dig” reflects the idea of digging into structured data to retrieve nested values.
 This package is inspired by Ruby's [`Hash#dig`](https://docs.ruby-lang.org/en/master/Hash.html#method-i-dig) method.
 
 ## Comparison with let-alist
@@ -66,6 +66,27 @@ Emacs provides the built-in `let-alist` macro for working with association lists
 ```
 
 Unlike `let-alist`, dig supports property lists, hash tables, and indexed lists, making it more versatile for different data structures.
+
+## `setf` (generalized variables) support
+
+Emacs Lisp makes it easy to set values ​​in a variety of data structures through **generalized variables** known as `setf`.  Of course, all modify macros can be used, not just `setf`.
+
+ * [Setting Generalized Variables (GNU Emacs Lisp Reference Manual)](https://www.gnu.org/software/emacs/manual/html_node/elisp/Setting-Generalized-Variables.html)
+ * [Modify Macros (Common Lisp Extensions)](https://www.gnu.org/software/emacs/manual/html_node/cl/Modify-Macros.html)
+
+```elisp
+(setq my-plist '(:foo (:bar 0)))
+(setf (dig my-plist :foo :bar) 42)
+(cl-incf (dig my-plist :foo :bar)) ;=> 43
+(cl-incf (dig my-plist :foo :bar)) ;=> 44
+
+my-plist ;=> (:foo (:bar 44))
+```
+
+> [!WARNING]
+> [The behavior is undefined][undefined_behavior] when no value exists for the target key -- it is useful for updating the value of existing elements, but not for helping to construct new data structures.
+
+[undefined_behavior]: https://en.wikipedia.org/wiki/Undefined_behavior
 
 ## Copyright
 

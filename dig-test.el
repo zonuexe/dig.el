@@ -37,7 +37,7 @@
                  (let ((plist '("foo" ("bar" "value"))))
                    (dig-plist plist "foo" "bar"))))
   (should (equal "value"
-                 (let ((lst '(nil (nil nil (nil nil nil"value")))))
+                 (let ((lst '(nil (nil nil (nil nil nil "value")))))
                    (dig-nth lst 1 2 3))))
   (should (equal "value"
                  (let* ((inner (let ((ht (make-hash-table :test #'equal)))
@@ -46,6 +46,32 @@
                         (hashtable (make-hash-table :test #'equal)))
                    (puthash "foo" inner hashtable)
                    (dig hashtable "foo" "bar")))))
+
+(ert-deftest dig-test-alist ()
+  (should (equal '((foo . ((bar . 42))))
+                 (let ((alist '((foo . ((bar . "value"))))))
+                   (setf (dig-alist alist 'foo 'bar) 42)
+                   alist)))
+  (should (equal '(("foo" . (("bar". 42))))
+                 (let ((alist '(("foo" . (("bar". "value"))))))
+                   (setf (dig-alist alist "foo" "bar") 42)
+                   alist)))
+  (should (equal '("foo" ("bar" 42))
+                 (let ((plist '("foo" ("bar" "value"))))
+                   (setf (dig-plist plist "foo" "bar") 42)
+                   plist)))
+  (should (equal '(nil (nil nil (nil nil nil 42)))
+                 (let ((lst '(nil (nil nil (nil nil nil "value")))))
+                   (setf (dig-nth lst 1 2 3) 42)
+                   lst)))
+  (should (eq 42
+              (let* ((inner (let ((ht (make-hash-table :test #'equal)))
+                              (puthash "bar" "value" ht)
+                              ht))
+                     (hashtable (make-hash-table :test #'equal)))
+                (puthash "foo" inner hashtable)
+                (setf (dig hashtable "foo" "bar") 42)
+                (dig hashtable "foo" "bar")))))
 
 (provide 'dig-test)
 ;;; dig-test.el ends here
