@@ -19,12 +19,12 @@ Instead of manually traversing these structures, `dig.el` expands lookup express
 (setq my-hash (make-hash-table :test 'equal))
 (puthash "foo" (make-hash-table :test 'equal) my-hash)
 (puthash "bar" 42 (gethash "foo" my-hash))
-(setq my-list '((42 43) (44 45)))
+(setq my-list '((40 41) (42 43)))
 
 (dig-alist my-alist 'foo 'bar)   ;; => 42
 (dig-plist my-plist :foo :bar)   ;; => 42
 (dig-hash my-hash "foo" "bar") ;; => 42
-(dig-nth my-list 1 0)           ;; => 44
+(dig-nth my-list 1 0)           ;; => 42
 ```
 
 ### Using dig for automatic key expansion
