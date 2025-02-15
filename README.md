@@ -1,13 +1,13 @@
-# 🪖 dig.el
+# 🪖 digs.el
 
-`dig.el` is an Emacs Lisp package that provides helper macros for retrieving values from structured lists and hash tables. This package allows users to conveniently “dig” into nested data structures such as:
+`digs.el` is an Emacs Lisp package that provides helper macros for retrieving values from structured lists and hash tables. The name “digs” stands for “Dig (data) structures,” reflecting the package's ability to help users conveniently *dig* into nested data structures such as:
 
  * Association lists (alist)
  * Property lists (plist)
  * Hash tables
  * Indexed lists (nth)
 
-Instead of manually traversing these structures, `dig.el` expands lookup expressions at macro expansion time, ensuring efficient and readable deep access.
+Instead of manually traversing these structures, `digs.el` expands lookup expressions at macro expansion time, ensuring efficient and readable deep access.
 
 ## Usage
 
@@ -21,21 +21,21 @@ Instead of manually traversing these structures, `dig.el` expands lookup express
 (puthash "bar" 42 (gethash "foo" my-hash))
 (setq my-list '((40 41) (42 43)))
 
-(dig-alist my-alist 'foo 'bar)   ;; => 42
-(dig-plist my-plist :foo :bar)   ;; => 42
-(dig-hash my-hash "foo" "bar") ;; => 42
-(dig-nth my-list 1 0)           ;; => 42
+(digs-alist my-alist 'foo 'bar)   ;; => 42
+(digs-plist my-plist :foo :bar)   ;; => 42
+(digs-hash my-hash "foo" "bar") ;; => 42
+(digs-nth my-list 1 0)           ;; => 42
 ```
 
-### Using dig for automatic key expansion
+### Using `digs` for automatic key expansion
 
-The dig macro determines the appropriate lookup method based on the key type. The first key (first-key) is required, and additional keys (keys) allow deeper traversal.
+The `digs` macro determines the appropriate lookup method based on the key type. The first key (first-key) is required, and additional keys (keys) allow deeper traversal.
 
 ```el
-(dig my-alist 'foo 'bar)   ;; Expands to alist lookup
-(dig my-plist :foo :bar)   ;; Expands to plist lookup
-(dig my-hash "foo" "bar") ;; Expands to hash lookup
-(dig my-list 1 0)          ;; Expands to nth lookup
+(digs my-alist 'foo 'bar)   ;; Expands to alist lookup
+(digs my-plist :foo :bar)   ;; Expands to plist lookup
+(digs my-hash "foo" "bar")  ;; Expands to hash lookup
+(digs my-list 1 0)          ;; Expands to nth lookup
 ```
 
 This approach makes retrieving deeply nested values more expressive and concise.
@@ -48,9 +48,11 @@ This approach makes retrieving deeply nested values more expressive and concise.
 The name “dig” reflects the idea of digging into structured data to retrieve nested values.
 This package is inspired by Ruby's [`Hash#dig`](https://docs.ruby-lang.org/en/master/Hash.html#method-i-dig) method.
 
+This package was originally just called “dig”, but was renamed to “digs” to avoid a conflict with the Emacs built-in [`dig`](https://en.wikipedia.org/wiki/Dig_(command)) command (short for “Domain Information Groper”).
+
 ## Comparison with let-alist
 
-Emacs provides the built-in `let-alist` macro for working with association lists.  However, `let-alist` is designed for binding nested values to variables in a more readable manner, while `dig.el` focuses on retrieving values with a concise expression.
+Emacs provides the built-in `let-alist` macro for working with association lists.  However, `let-alist` is designed for binding nested values to variables in a more readable manner, while `digs.el` focuses on retrieving values with a concise expression.
 
 ### Example using let-alist
 
@@ -59,13 +61,13 @@ Emacs provides the built-in `let-alist` macro for working with association lists
   .foo.bar) ;; => 42
 ```
 
-### Equivalent using `dig-alist`
+### Equivalent using `digs-alist`
 
 ```elisp
-(dig-alist my-alist 'foo 'bar) ;; => 42
+(digs-alist my-alist 'foo 'bar) ;; => 42
 ```
 
-Unlike `let-alist`, dig supports property lists, hash tables, and indexed lists, making it more versatile for different data structures.
+Unlike `let-alist`, digs supports property lists, hash tables, and indexed lists, making it more versatile for different data structures.
 
 ## `setf` (generalized variables) support
 
@@ -76,9 +78,9 @@ Emacs Lisp makes it easy to set values ​​in a variety of data structures thr
 
 ```elisp
 (setq my-plist '(:foo (:bar 0)))
-(setf (dig my-plist :foo :bar) 42)
-(cl-incf (dig my-plist :foo :bar)) ;=> 43
-(cl-incf (dig my-plist :foo :bar)) ;=> 44
+(setf (digs my-plist :foo :bar) 42)
+(cl-incf (digs my-plist :foo :bar)) ;=> 43
+(cl-incf (digs my-plist :foo :bar)) ;=> 44
 
 my-plist ;=> (:foo (:bar 44))
 ```

@@ -1,4 +1,4 @@
-;;; dig-test.el --- Test for dig.el                  -*- lexical-binding: t; -*-
+;;; digs-test.el --- Test for digs.el                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025  USAMI Kenta
 
@@ -24,45 +24,45 @@
 
 ;;; Code:
 (require 'ert)
-(require 'dig)
+(require 'digs)
 
-(ert-deftest dig-test ()
+(ert-deftest digs-test ()
   (should (equal "value"
                  (let ((alist '((foo . ((bar . "value"))))))
-                   (dig-alist alist 'foo 'bar))))
+                   (digs-alist alist 'foo 'bar))))
   (should (equal "value"
                  (let ((alist '(("foo" . (("bar". "value"))))))
-                   (dig-alist alist "foo" "bar"))))
+                   (digs-alist alist "foo" "bar"))))
   (should (equal "value"
                  (let ((plist '("foo" ("bar" "value"))))
-                   (dig-plist plist "foo" "bar"))))
+                   (digs-plist plist "foo" "bar"))))
   (should (equal "value"
                  (let ((lst '(nil (nil nil (nil nil nil "value")))))
-                   (dig-nth lst 1 2 3))))
+                   (digs-nth lst 1 2 3))))
   (should (equal "value"
                  (let* ((inner (let ((ht (make-hash-table :test #'equal)))
                                  (puthash "bar" "value" ht)
                                  ht))
                         (hashtable (make-hash-table :test #'equal)))
                    (puthash "foo" inner hashtable)
-                   (dig hashtable "foo" "bar")))))
+                   (digs hashtable "foo" "bar")))))
 
-(ert-deftest dig-test-alist ()
+(ert-deftest digs-test-alist ()
   (should (equal '((foo . ((bar . 42))))
                  (let ((alist '((foo . ((bar . "value"))))))
-                   (setf (dig-alist alist 'foo 'bar) 42)
+                   (setf (digs-alist alist 'foo 'bar) 42)
                    alist)))
   (should (equal '(("foo" . (("bar". 42))))
                  (let ((alist '(("foo" . (("bar". "value"))))))
-                   (setf (dig-alist alist "foo" "bar") 42)
+                   (setf (digs-alist alist "foo" "bar") 42)
                    alist)))
   (should (equal '("foo" ("bar" 42))
                  (let ((plist '("foo" ("bar" "value"))))
-                   (setf (dig-plist plist "foo" "bar") 42)
+                   (setf (digs-plist plist "foo" "bar") 42)
                    plist)))
   (should (equal '(nil (nil nil (nil nil nil 42)))
                  (let ((lst '(nil (nil nil (nil nil nil "value")))))
-                   (setf (dig-nth lst 1 2 3) 42)
+                   (setf (digs-nth lst 1 2 3) 42)
                    lst)))
   (should (eq 42
               (let* ((inner (let ((ht (make-hash-table :test #'equal)))
@@ -70,8 +70,8 @@
                               ht))
                      (hashtable (make-hash-table :test #'equal)))
                 (puthash "foo" inner hashtable)
-                (setf (dig hashtable "foo" "bar") 42)
-                (dig hashtable "foo" "bar")))))
+                (setf (digs hashtable "foo" "bar") 42)
+                (digs hashtable "foo" "bar")))))
 
-(provide 'dig-test)
-;;; dig-test.el ends here
+(provide 'digs-test)
+;;; digs-test.el ends here

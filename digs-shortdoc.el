@@ -1,4 +1,4 @@
-;;; dig-shortdoc.el --- Shortdoc for dig.el          -*- lexical-binding: t; -*-
+;;; digs-shortdoc.el --- Shortdoc for digs.el        -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025  USAMI Kenta
 
@@ -24,39 +24,39 @@
 
 ;;; Code:
 (eval-when-compile
-  (require 'dig)
+  (require 'digs)
   (require 'shortdoc))
 
 (define-short-documentation-group dig
-  "Dig into nested sutructures."
-  (dig
+  "Digs into nested sutructures."
+  (digs
    :eval (macroexpand
-          '(dig subject :foo))
+          '(digs subject :foo))
    :eval (macroexpand
-          '(dig subject 'foo))
+          '(digs subject 'foo))
    :eval (macroexpand
-          '(dig subject "foo"))
+          '(digs subject "foo"))
    :eval (macroexpand
-          '(dig subject "foo" "bar"))
+          '(digs subject "foo" "bar"))
    :eval (macroexpand
-          '(dig subject 1 2)))
-  (dig-alist
-   :eval (dig '((foo . 42)) 'foo)
-   :eval (dig-alist '((foo . 42)) 'foo))
-  (dig-plist
-   :eval (dig '(:foo 42) :foo)
-   :eval (dig-plist '(:foo 42) :foo))
-  (dig-nth
-   :eval (dig '(39 (40 41 42)) 1 2)
-   :eval (dig-nth '(39 (40 41 42)) 1 2))
-  (dig-hash
+          '(digs subject 1 2)))
+  (digs-alist
+   :eval (digs '((foo . 42)) 'foo)
+   :eval (digs-alist '((foo . 42)) 'foo))
+  (digs-plist
+   :eval (digs '(:foo 42) :foo)
+   :eval (digs-plist '(:foo 42) :foo))
+  (digs-nth
+   :eval (digs '(39 (40 41 42)) 1 2)
+   :eval (digs-nth '(39 (40 41 42)) 1 2))
+  (digs-hash
    :eval (macroexpand
-          '(dig-hash subject "foo" "bar"))
+          '(digs-hash subject "foo" "bar"))
    :eval (let* ((in (make-hash-table :test #'equal))
                 (ht (make-hash-table :test #'equal)))
            (puthash "bar" 42 in)
            (puthash "foo" in ht)
-           (dig-hash ht "foo" "bar"))))
+           (digs-hash ht "foo" "bar"))))
 
-(provide 'dig-shortdoc)
-;;; dig-shortdoc.el ends here
+(provide 'digs-shortdoc)
+;;; digs-shortdoc.el ends here
