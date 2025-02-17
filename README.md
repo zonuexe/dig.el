@@ -2,12 +2,17 @@
 
 `digs.el` is an Emacs Lisp package that provides helper macros for retrieving values from structured lists and hash tables. The name “digs” stands for “Dig (data) structures,” reflecting the package's ability to help users conveniently *dig* into nested data structures such as:
 
- * Association lists (alist)
- * Property lists (plist)
- * Hash tables
- * Indexed lists (nth)
+ * [Association Lists][] (alist)
+ * [Property Lists][] (plist)
+ * [Hash tables][] (hash)
+ * [Sequences][] (lists and arrays)
 
 Instead of manually traversing these structures, `digs.el` expands lookup expressions at macro expansion time, ensuring efficient and readable deep access.
+
+[Association Lists]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Association-Lists.html
+[Property Lists]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Property-Lists.html
+[Hash tables]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html
+[Sequences]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequences-Arrays-Vectors.html
 
 ## Usage
 
@@ -20,11 +25,13 @@ Instead of manually traversing these structures, `digs.el` expands lookup expres
 (puthash "foo" (make-hash-table :test 'equal) my-hash)
 (puthash "bar" 42 (gethash "foo" my-hash))
 (setq my-list '((40 41) (42 43)))
+(setq my-vector '[[40 41] [42 43]])
 
-(digs-alist my-alist 'foo 'bar)   ;; => 42
-(digs-plist my-plist :foo :bar)   ;; => 42
+(digs-alist my-alist 'foo 'bar) ;; => 42
+(digs-plist my-plist :foo :bar) ;; => 42
 (digs-hash my-hash "foo" "bar") ;; => 42
-(digs-nth my-list 1 0)           ;; => 42
+(digs-elt my-list 1 0)          ;; => 42
+(digs-elt my-vector 1 0)        ;; => 42
 ```
 
 ### Using `digs` for automatic key expansion
@@ -35,7 +42,8 @@ The `digs` macro determines the appropriate lookup method based on the key type.
 (digs my-alist 'foo 'bar)   ;; Expands to alist lookup
 (digs my-plist :foo :bar)   ;; Expands to plist lookup
 (digs my-hash "foo" "bar")  ;; Expands to hash lookup
-(digs my-list 1 0)          ;; Expands to nth lookup
+(digs my-list 1 0)          ;; Expands to elt lookup
+(digs my-vector 1 0)        ;; Expands to elt lookup
 ```
 
 This approach makes retrieving deeply nested values more expressive and concise.

@@ -40,6 +40,15 @@
                  (let ((lst '(nil (nil nil (nil nil nil "value")))))
                    (digs-nth lst 1 2 3))))
   (should (equal "value"
+                 (let ((lst '(nil (nil nil (nil nil nil "value")))))
+                   (digs-elt lst 1 2 3))))
+  (should (equal "value"
+                 (let ((lst [nil [nil nil [nil nil nil "value"]]]))
+                   (digs-aref lst 1 2 3))))
+  (should (equal "value"
+                 (let ((lst [nil [nil nil [nil nil nil "value"]]]))
+                   (digs-elt lst 1 2 3))))
+  (should (equal "value"
                  (let* ((inner (let ((ht (make-hash-table :test #'equal)))
                                  (puthash "bar" "value" ht)
                                  ht))
@@ -64,6 +73,22 @@
                  (let ((lst '(nil (nil nil (nil nil nil "value")))))
                    (setf (digs-nth lst 1 2 3) 42)
                    lst)))
+  (should (equal '(nil (nil nil (nil nil nil 42)))
+                 (let ((lst '(nil (nil nil (nil nil nil "value")))))
+                   (setf (digs-elt lst 1 2 3) 42)
+                   lst)))
+  (should (equal [nil [nil nil [nil nil nil 42]]]
+                 (let ((lst [nil [nil nil [nil nil nil "value"]]]))
+                   (setf (digs-aref lst 1 2 3) 42)
+                   lst)))
+  (should (equal [nil [nil nil [nil nil nil 42]]]
+                 (let ((lst [nil [nil nil [nil nil nil "value"]]]))
+                   (setf (digs-elt lst 1 2 3) 42)
+                   lst)))
+  (should (equal "v*lue"
+                 (let ((str "value"))
+                   (setf (digs-elt str 1) 42)
+                   str)))
   (should (eq 42
               (let* ((inner (let ((ht (make-hash-table :test #'equal)))
                               (puthash "bar" "value" ht)

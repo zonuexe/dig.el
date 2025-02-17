@@ -54,12 +54,26 @@ KEY is the key to look up.
 SUBJECT is the hash table."
   `(when ,subject (gethash ,key ,subject)))
 
+(defun digs--expand-elt (subject key)
+  "Expand an indexed list lookup expression.
+
+KEY is the index to retrieve.
+SUBJECT is the sequence (list or array)."
+  `(elt ,subject ,key))
+
 (defun digs--expand-nth (subject key)
   "Expand an indexed list lookup expression.
 
 KEY is the index to retrieve.
 SUBJECT is the list."
   `(nth ,key ,subject))
+
+(defun digs--expand-aref (subject key)
+  "Expand an indexed list lookup expression.
+
+KEY is the index to retrieve.
+SUBJECT is the array."
+  `(aref ,subject ,key))
 
 (defun digs--expand-dwim (subject key)
   "Expand a lookup expression based on the type of KEY.
@@ -69,7 +83,7 @@ SUBJECT is the data structure.
 Expands to the appropriate lookup form based on the type of KEY."
   (cond
    ((stringp key) (digs--expand-hash subject key))
-   ((integerp key) (digs--expand-nth subject key))
+   ((integerp key) (digs--expand-elt subject key))
    ((keywordp key) (digs--expand-plist subject key))
    ((digs--expand-alist subject key))))
 
@@ -101,6 +115,15 @@ KEYS is an optional sequence of additional keys to traverse the hash table.
 Returns the value associated with the final key."
   (cl-reduce #'digs--expand-hash (cons first-key keys) :initial-value subject))
 
+(defmacro digs-elt (subject first-key &rest keys)
+  "Retrieve a nested value from a list using indexed access.
+
+SUBJECT is the initial list.
+FIRST-KEY is the first index to retrieve.
+KEYS is an optional sequence of additional indices to traverse the sequence.
+Returns the value at the final index."
+  (cl-reduce #'digs--expand-elt (cons first-key keys) :initial-value subject))
+
 (defmacro digs-nth (subject first-key &rest keys)
   "Retrieve a nested value from a list using indexed access.
 
@@ -109,6 +132,15 @@ FIRST-KEY is the first index to retrieve.
 KEYS is an optional sequence of additional indices to traverse the list.
 Returns the value at the final index."
   (cl-reduce #'digs--expand-nth (cons first-key keys) :initial-value subject))
+
+(defmacro digs-aref (subject first-key &rest keys)
+  "Retrieve a nested value from a list using indexed access.
+
+SUBJECT is the initial array.
+FIRST-KEY is the first index to retrieve.
+KEYS is an optional sequence of additional indices to traverse the list.
+Returns the value at the final index."
+  (cl-reduce #'digs--expand-aref (cons first-key keys) :initial-value subject))
 
 (defmacro digs (subject first-key &rest keys)
   "Expand a nested lookup expression based on the type of each key.
