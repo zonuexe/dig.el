@@ -14,6 +14,44 @@ Instead of manually traversing these structures, `digs.el` expands lookup expres
 [Hash tables]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html
 [Sequences]: https://www.gnu.org/software/emacs/manual/html_node/elisp/Sequences-Arrays-Vectors.html
 
+## Motivations
+
+Languages ​​like JavaScript have a symmetric syntax for reading and writing nested objects.
+
+```js
+const obj = {foo: {bar: {buz: 0}}};
+obj.foo.bar.buz = 42;
+obj.foo.bar.buz++;
+console.log(obj.foo.bar.buz);
+```
+
+Reading nested structures is complicated in Lisp:
+
+``` elisp
+(setq plist '(:foo (:bar (:buz 0))))
+(plist-get (plist-get (plist-get plist :foo) :bar) :buz)
+
+;; Another way... is it easy to read?
+(require 'subr-x)
+(thread-first plist
+              (plist-get :foo)
+              (plist-get :bar)
+              (plist-get :buz))
+
+;; How to replace 0 with 42? That's overly complicated compared to JS.
+```
+
+If you replace it with digs, it will look like this:
+
+``` elisp
+(setq plist '(:foo (:bar (:buz 0))))
+(setf (digs plist :foo :bar :buz) 42)      ;; obj.foo.bar.buz = 42
+(cl-incf (digs plist :foo :bar :buz))      ;; obj.foo.bar.buz++
+(message "%S" (digs plist :foo :bar :buz)) ;; console.log(obj.foo.bar.buz)
+```
+
+There are more characters than in JS, but it's symmetrical and much easier to read 🎉
+
 ## Usage
 
 ### Retrieving values from different data structures
